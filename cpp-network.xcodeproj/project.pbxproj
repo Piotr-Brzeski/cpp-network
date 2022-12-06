@@ -17,7 +17,31 @@
 		E2D2B7E1293FB87D0006ACA8 /* select.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2D2B7DD293FB87D0006ACA8 /* select.cpp */; };
 		E2D2B7E2293FB87D0006ACA8 /* descriptor_set.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2D2B7DE293FB87D0006ACA8 /* descriptor_set.cpp */; };
 		E2D2B7E7293FB9550006ACA8 /* socket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2D2B7E6293FB9550006ACA8 /* socket.cpp */; };
+		E2D2B7EF293FBC4A0006ACA8 /* udp-server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2D2B7EE293FBC4A0006ACA8 /* udp-server.cpp */; };
+		E2D2B7F4293FBE0B0006ACA8 /* libcpp-network.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E2D2B7C6293FB7140006ACA8 /* libcpp-network.a */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E2D2B7F5293FBE0B0006ACA8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E2D2B7BE293FB7140006ACA8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E2D2B7C5293FB7140006ACA8;
+			remoteInfo = "cpp-network";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E2D2B7EA293FBC4A0006ACA8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E2D2B7C6293FB7140006ACA8 /* libcpp-network.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libcpp-network.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -31,6 +55,8 @@
 		E2D2B7DD293FB87D0006ACA8 /* select.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = select.cpp; sourceTree = "<group>"; };
 		E2D2B7DE293FB87D0006ACA8 /* descriptor_set.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = descriptor_set.cpp; sourceTree = "<group>"; };
 		E2D2B7E6293FB9550006ACA8 /* socket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = socket.cpp; sourceTree = "<group>"; };
+		E2D2B7EC293FBC4A0006ACA8 /* udp-server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "udp-server"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2D2B7EE293FBC4A0006ACA8 /* udp-server.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "udp-server.cpp"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,6 +67,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E2D2B7E9293FBC4A0006ACA8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2D2B7F4293FBE0B0006ACA8 /* libcpp-network.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -48,7 +82,9 @@
 			isa = PBXGroup;
 			children = (
 				E2D2B7E5293FB8FF0006ACA8 /* cpp-network */,
+				E2D2B7ED293FBC4A0006ACA8 /* examples */,
 				E2D2B7C7293FB7140006ACA8 /* Products */,
+				E2D2B7F3293FBE0B0006ACA8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,6 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				E2D2B7C6293FB7140006ACA8 /* libcpp-network.a */,
+				E2D2B7EC293FBC4A0006ACA8 /* udp-server */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,6 +112,21 @@
 				E2D2B7D3293FB86D0006ACA8 /* socket.h */,
 			);
 			path = "cpp-network";
+			sourceTree = "<group>";
+		};
+		E2D2B7ED293FBC4A0006ACA8 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				E2D2B7EE293FBC4A0006ACA8 /* udp-server.cpp */,
+			);
+			path = examples;
+			sourceTree = "<group>";
+		};
+		E2D2B7F3293FBE0B0006ACA8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +164,24 @@
 			productReference = E2D2B7C6293FB7140006ACA8 /* libcpp-network.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		E2D2B7EB293FBC4A0006ACA8 /* udp-server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E2D2B7F2293FBC4A0006ACA8 /* Build configuration list for PBXNativeTarget "udp-server" */;
+			buildPhases = (
+				E2D2B7E8293FBC4A0006ACA8 /* Sources */,
+				E2D2B7E9293FBC4A0006ACA8 /* Frameworks */,
+				E2D2B7EA293FBC4A0006ACA8 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E2D2B7F6293FBE0B0006ACA8 /* PBXTargetDependency */,
+			);
+			name = "udp-server";
+			productName = "udp-server";
+			productReference = E2D2B7EC293FBC4A0006ACA8 /* udp-server */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -120,8 +190,12 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastUpgradeCheck = 1410;
+				ORGANIZATIONNAME = Brzeski.net;
 				TargetAttributes = {
 					E2D2B7C5293FB7140006ACA8 = {
+						CreatedOnToolsVersion = 14.1;
+					};
+					E2D2B7EB293FBC4A0006ACA8 = {
 						CreatedOnToolsVersion = 14.1;
 					};
 				};
@@ -140,6 +214,7 @@
 			projectRoot = "";
 			targets = (
 				E2D2B7C5293FB7140006ACA8 /* cpp-network */,
+				E2D2B7EB293FBC4A0006ACA8 /* udp-server */,
 			);
 		};
 /* End PBXProject section */
@@ -157,7 +232,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E2D2B7E8293FBC4A0006ACA8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E2D2B7EF293FBC4A0006ACA8 /* udp-server.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E2D2B7F6293FBE0B0006ACA8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E2D2B7C5293FB7140006ACA8 /* cpp-network */;
+			targetProxy = E2D2B7F5293FBE0B0006ACA8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E2D2B7C8293FB7140006ACA8 /* Debug */ = {
@@ -217,6 +308,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				USE_HEADERMAP = NO;
 			};
 			name = Debug;
 		};
@@ -271,6 +363,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				USE_HEADERMAP = NO;
 			};
 			name = Release;
 		};
@@ -294,6 +387,24 @@
 			};
 			name = Release;
 		};
+		E2D2B7F0293FBC4A0006ACA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		E2D2B7F1293FBC4A0006ACA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -311,6 +422,15 @@
 			buildConfigurations = (
 				E2D2B7CB293FB7140006ACA8 /* Debug */,
 				E2D2B7CC293FB7140006ACA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E2D2B7F2293FBC4A0006ACA8 /* Build configuration list for PBXNativeTarget "udp-server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E2D2B7F0293FBC4A0006ACA8 /* Debug */,
+				E2D2B7F1293FBC4A0006ACA8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
