@@ -3,22 +3,19 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
 //
 
 #pragma once
 
-#include <string>
-#include <cstdint>
-#include <stdexcept>
+#include "message.h"
+#include "exception.h"
 
 namespace network {
 
-using packet = std::basic_string<std::uint8_t>;
-
 class socket {
 public:
-	using exception = std::runtime_error;
+	using exception = error::exception;
 	
 	~socket();
 	
@@ -29,8 +26,9 @@ public:
 	socket& operator=(socket const& s) = delete;
 
 	void bind(int port);
-	packet recv(std::size_t max_size);
-	
+	buffer recv(std::size_t max_size);
+	message recvfrom(std::size_t max_size);
+
 	int descriptor() const {
 		return m_descriptor;
 	}
@@ -47,6 +45,12 @@ private:
 class udp_socket: public socket {
 public:
 	udp_socket();
+	
+	void broadcast(int port, buffer const& data);
+	void send(ipv4_address address, int port, buffer const& data);
+	
+private:
+	bool m_can_broadcast = false;
 };
 
 // MARK: - TCP socket

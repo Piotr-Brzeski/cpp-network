@@ -3,13 +3,14 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
 //
 
 #pragma once
 
 #include "socket.h"
 #include "select.h"
+#include "exception.h"
 #include <thread>
 #include <atomic>
 #include <stdexcept>
@@ -19,7 +20,7 @@ namespace network {
 
 class server {
 public:
-	using exception = std::runtime_error;
+	using exception = error::exception;
 	
 	server();
 	~server();
@@ -44,8 +45,8 @@ class udp_server: public server {
 public:
 	void start(int port);
 	
-	std::size_t                 packet_size = 16;
-	std::function<void(packet)> callback;
+	std::size_t                  packet_size = 16;
+	std::function<void(message)> callback;
 	
 private:
 	udp_socket m_socket;

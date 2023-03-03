@@ -3,7 +3,7 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
 //
 
 #include "server.h"
@@ -38,9 +38,9 @@ void udp_server::start(int port) {
 			while(m_state == 1) {
 				auto set = m_select.wait(m_socket);
 				if(set.contains(m_socket)) {
-					auto data = m_socket.recv(packet_size);
+					auto msg = m_socket.recvfrom(packet_size);
 					if(callback) {
-						callback(std::move(data));
+						callback(std::move(msg));
 					}
 				}
 			}

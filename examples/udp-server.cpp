@@ -3,7 +3,7 @@
 //  udp-server
 //
 //  Created by Piotr Brzeski on 2022-12-06.
-//  Copyright © 2022 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
 //
 
 #include <cpp-network/server.h>
@@ -12,9 +12,9 @@
 int main(int argc, const char * argv[]) {
 	try {
 		auto server = network::udp_server();
-		server.callback = [](network::packet data){
-			std::cout << "Recv [ ";
-			for(auto i : data) {
+		server.callback = [](network::message message){
+			std::cout << "Recv from " << message.source_str() << " [ ";
+			for(auto i : message.content) {
 				std::cout << static_cast<unsigned int>(i) << " ";
 			}
 			std::cout << "]" << std::endl;
@@ -25,7 +25,11 @@ int main(int argc, const char * argv[]) {
 		std::cin >> port;
 		return 0;
 	}
+	catch(std::exception& e) {
+		std::cerr << "Exception: " << e.what() << std::endl;
+	}
 	catch(...) {
+		std::cerr << "Unknown Exception" << std::endl;
 	}
 	return 1;
 }

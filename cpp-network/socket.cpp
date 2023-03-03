@@ -3,7 +3,7 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
 //
 
 #include "socket.h"
@@ -12,6 +12,36 @@
 #include <unistd.h>
 
 using namespace network;
+
+namespace {
+
+class socket_address {
+public:
+	explicit socket_address(int port = 0, ipv4_address address = INADDR_ANY) {
+		m_address.sin_family = AF_INET;
+		m_address.sin_addr.s_addr = address;
+		m_address.sin_port = htons(port);
+	}
+	
+	ipv4_address get() const {
+		return m_address.sin_addr.s_addr;
+	}
+	
+	::socklen_t size() {
+		return sizeof(m_address);
+	}
+	sockaddr* pointer() {
+		return reinterpret_cast<sockaddr*>(&m_address);
+	}
+	sockaddr const * pointer() const {
+		return reinterpret_cast<sockaddr const*>(&m_address);
+	}
+	
+private:
+	::sockaddr_in m_address = {};
+};
+
+}
 
 socket::socket(int descriptor)
 	: m_descriptor(descriptor)
@@ -53,31 +83,60 @@ network::socket& socket::operator=(socket&& s) {
 	return *this;
 }
 
-
 void socket::bind(int port) {
-	::sockaddr_in addr;
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons(port);
-	if(::bind(m_descriptor, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) != 0) {
+	auto address = socket_address(port);
+	if(::bind(m_descriptor, address.pointer(), address.size()) != 0) {
 		throw exception("socket::bind failed.");
 	}
 }
 
-packet socket::recv(std::size_t max_size) {
-	auto buffer = packet(max_size, 0);
-	auto size = ::recv(m_descriptor, buffer.data(), max_size, MSG_NOSIGNAL);
+buffer socket::recv(std::size_t max_size) {
+	auto data = buffer(max_size, 0);
+	auto size = ::recv(m_descriptor, data.data(), max_size, MSG_NOSIGNAL);
 	if(size < 0) {
 		throw exception("socket::recv failed.");
 	}
-	buffer.resize(size);
-	return buffer;
+	data.resize(size);
+	return data;
+}
+
+message socket::recvfrom(std::size_t max_size) {
+	auto msg = message(max_size);
+	auto address = socket_address();
+	auto address_size = address.size();
+	auto size = ::recvfrom(m_descriptor, msg.content.data(), max_size, MSG_NOSIGNAL, address.pointer(), &address_size);
+	assert(address_size == address.size());
+	if(size < 0) {
+		throw exception("socket::recvfrom failed.");
+	}
+	msg.content.resize(size);
+	msg.source = address.get();
+	return msg;
 }
 
 // MARK: - UDP socket
 udp_socket::udp_socket()
 	: socket(create(SOCK_DGRAM))
 {
+}
+
+void udp_socket::broadcast(int port, const buffer &data) {
+	if(!m_can_broadcast) {
+		int enabled = 1;
+		if(::setsockopt(descriptor(), SOL_SOCKET, SO_BROADCAST, &enabled, sizeof(enabled)) != 0) {
+			throw exception("udp_socket::broadcast failed: can not enable broadcast");
+		}
+		m_can_broadcast = true;
+	}
+	send(INADDR_BROADCAST, port, data);
+}
+
+void udp_socket::send(ipv4_address address_value, int port, buffer const& data) {
+	auto address = socket_address(port, address_value);
+	auto send = ::sendto(descriptor(), data.data(), data.size(), 0, address.pointer(), address.size());
+	if(send != data.size()) {
+		throw exception("udp_socket::send failed");
+	}
 }
 
 // MARK: - TCP socket
