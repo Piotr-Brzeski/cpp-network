@@ -108,19 +108,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		E2B389A229AFCC3100E35B26 /* udp-client */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "udp-client";
-			sourceTree = "<group>";
-		};
 		E2D2B7BD293FB7140006ACA8 = {
 			isa = PBXGroup;
 			children = (
 				E2D2B7E5293FB8FF0006ACA8 /* cpp-network */,
 				E2D2B7ED293FBC4A0006ACA8 /* examples */,
-				E2B389A229AFCC3100E35B26 /* udp-client */,
 				E2D2B7C7293FB7140006ACA8 /* Products */,
 				E2D2B7F3293FBE0B0006ACA8 /* Frameworks */,
 			);
