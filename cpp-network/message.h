@@ -15,6 +15,7 @@ namespace network {
 
 using buffer = std::basic_string<std::uint8_t>;
 using ipv4_address = std::uint32_t;
+constexpr ipv4_address invalid_ipv4_address = 0;
 
 inline std::string ipv4_str(ipv4_address address) {
 	return
