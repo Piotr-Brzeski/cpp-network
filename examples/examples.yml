@@ -1,0 +1,24 @@
+targets:
+  udp-client:
+    platform: macOS
+    type: tool
+    dependencies:
+      - target: cpp-network
+        link: true
+    settings:
+      HEADER_SEARCH_PATHS: ${SRCROOT}
+    sources:
+      - path: udp-client.cpp
+        group: examples
+
+  udp-server:
+    platform: macOS
+    type: tool
+    dependencies:
+      - target: cpp-network
+        link: true
+    settings:
+      HEADER_SEARCH_PATHS: ${SRCROOT}
+    sources:
+      - path: udp-server.cpp
+        group: examples
