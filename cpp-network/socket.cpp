@@ -7,6 +7,7 @@
 //
 
 #include "socket.h"
+#include <cassert>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>

@@ -3,7 +3,7 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
 //
 
 #include "select.h"
@@ -24,13 +24,13 @@ int pselect(descriptor_set& in_set, descriptor_set& err_set, std::optional<std::
 			::timespec ts;
 			ts.tv_sec = seconds.count();
 			ts.tv_nsec = nanoseconds.count();
-			return ::pselect(in_set.max_fd, &in_set.fd_set, nullptr, &err_set.fd_set, &ts, nullptr);
+			return ::pselect(in_set.max_fd, &in_set.fdset, nullptr, &err_set.fdset, &ts, nullptr);
 		}
 		in_set.clear();
 		err_set.clear();
 		return 0;
 	}
-	return ::pselect(in_set.max_fd, &in_set.fd_set, nullptr, &err_set.fd_set, nullptr, nullptr);
+	return ::pselect(in_set.max_fd, &in_set.fdset, nullptr, &err_set.fdset, nullptr, nullptr);
 }
 
 }

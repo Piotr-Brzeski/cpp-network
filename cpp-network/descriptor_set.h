@@ -49,7 +49,7 @@ struct descriptor_set {
 	
 	bool empty() const;
 	
-	::fd_set fd_set;
+	::fd_set fdset;
 	int      max_fd;
 };
 
