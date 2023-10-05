@@ -30,14 +30,21 @@ public:
 	server& operator=(server const&) = delete;
 	server& operator=(server&&) = delete;
 	
-	void start(int port);
 	void stop();
+	void wait();
 	
 protected:
-	select           m_select;
-	std::thread      m_server_thread;
-	std::thread      m_worker_thread;
-	std::atomic<int> m_state;
+	bool is_running();
+	void wait(std::unique_lock<std::mutex>& lock);
+	enum class state { ready, running, stopping, stopped };
+	
+	select                  m_select;
+	std::thread             m_server_thread;
+	state                   m_state = state::ready;
+	std::mutex              m_mutex;
+	std::condition_variable m_condition;
+	
+	
 };
 
 // MARK: udp_server

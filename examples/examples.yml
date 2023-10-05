@@ -5,6 +5,8 @@ targets:
     dependencies:
       - target: cpp-network
         link: true
+      - target: cpp-log
+        link: true
     settings:
       HEADER_SEARCH_PATHS: ${SRCROOT}
     sources:
@@ -16,6 +18,8 @@ targets:
     type: tool
     dependencies:
       - target: cpp-network
+        link: true
+      - target: cpp-log
         link: true
     settings:
       HEADER_SEARCH_PATHS: ${SRCROOT}

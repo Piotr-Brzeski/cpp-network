@@ -2,6 +2,9 @@ targets:
   cpp-network:
     platform: macOS
     type: library.static
+    settings:
+      HEADER_SEARCH_PATHS:
+        - ${SRCROOT}/cpp-log
     sources:
       - path: descriptor_set.cpp
         group: cpp-network

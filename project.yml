@@ -20,4 +20,5 @@ settings:
 
 include:
   - cpp-network/cpp-network.yml
+  - cpp-log/cpp-log/cpp-log.yml
   - examples/examples.yml
