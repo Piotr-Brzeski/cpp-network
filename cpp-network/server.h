@@ -44,19 +44,25 @@ protected:
 	std::mutex              m_mutex;
 	std::condition_variable m_condition;
 	
-	
 };
 
 // MARK: udp_server
 class udp_server: public server {
 public:
+	template<class Task, class Period>
+	void set_periodic_task(Task task, Period period) {
+		m_periodic_task = std::move(task);
+		m_period = std::chrono::duration_cast<std::chrono::nanoseconds>(period);
+	}
 	void start(int port);
 	
 	std::size_t                  packet_size = 16;
 	std::function<void(message)> callback;
 	
 private:
-	udp_socket m_socket;
+	udp_socket                              m_socket;
+	std::function<void()>                   m_periodic_task;
+	std::optional<std::chrono::nanoseconds> m_period;
 };
 
 // MARK: tcp_server

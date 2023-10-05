@@ -7,6 +7,7 @@
 //
 
 #include <cpp-network/server.h>
+#include <cpp-log/log.h>
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
@@ -19,6 +20,7 @@ int main(int argc, const char * argv[]) {
 			}
 			std::cout << "]" << std::endl;
 		};
+		server.set_periodic_task([](){ log::log("Periodic task"); }, std::chrono::seconds(10));
 		int port = 1234;
 		server.start(port);
 		std::cout << "Server started on UDP port " << port << std::endl;

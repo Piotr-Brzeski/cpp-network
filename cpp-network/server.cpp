@@ -68,12 +68,15 @@ void udp_server::start(int port) {
 		try {
 			m_socket.bind(port);
 			while(is_running()) {
-				auto set = m_select.wait(m_socket);
+				auto set = m_select.wait(m_socket, m_period);
 				if(set.contains(m_socket)) {
 					auto msg = m_socket.recvfrom(packet_size);
 					if(callback) {
 						callback(std::move(msg));
 					}
+				}
+				else if(m_periodic_task) {
+					m_periodic_task();
 				}
 			}
 		}
