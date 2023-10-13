@@ -7,10 +7,12 @@
 //
 
 #include <cpp-network/server.h>
+#include <cpp-log/log.h>
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
 	try {
+		auto log = logger::start(logger::cout());
 		auto socket = network::udp_socket();
 		auto message = network::buffer();
 		message.append(5, 'a');

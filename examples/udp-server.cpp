@@ -12,6 +12,7 @@
 
 int main(int argc, const char * argv[]) {
 	try {
+		auto log = logger::start(logger::cout());
 		auto server = network::udp_server();
 		server.callback = [](network::message message){
 			std::cout << "Recv from " << message.source_str() << " [ ";
@@ -20,7 +21,7 @@ int main(int argc, const char * argv[]) {
 			}
 			std::cout << "]" << std::endl;
 		};
-		server.set_periodic_task([](){ log::log("Periodic task"); }, std::chrono::seconds(10));
+		server.set_periodic_task([](){ logger::log("Periodic task"); }, std::chrono::seconds(10));
 		int port = 1234;
 		server.start(port);
 		std::cout << "Server started on UDP port " << port << std::endl;

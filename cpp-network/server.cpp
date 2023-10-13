@@ -81,10 +81,10 @@ void udp_server::start(int port) {
 			}
 		}
 		catch(std::exception &e) {
-			log::log(std::string("server finished due to exception: ") + e.what());
+			logger::log(std::string("server finished due to exception: ") + e.what());
 		}
 		catch(...) {
-			log::log("server finished due to unknown exception");
+			logger::log("server finished due to unknown exception");
 		}
 		auto lock = std::lock_guard(m_mutex);
 		assert(m_state == state::running);
