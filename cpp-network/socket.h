@@ -3,13 +3,14 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2026 Brzeski.net. All rights reserved.
 //
 
 #pragma once
 
 #include "message.h"
 #include "exception.h"
+#include <optional>
 
 namespace network {
 
@@ -24,11 +25,9 @@ public:
 	
 	socket(socket const&) = delete;
 	socket& operator=(socket const& s) = delete;
-
+	
 	void bind(int port);
-	buffer recv(std::size_t max_size);
-	message recvfrom(std::size_t max_size);
-
+	
 	int descriptor() const {
 		return m_descriptor;
 	}
@@ -49,6 +48,9 @@ public:
 	void broadcast(int port, buffer const& data);
 	void send(ipv4_address address, int port, buffer const& data);
 	
+	buffer recv(std::size_t max_size);
+	message recvfrom(std::size_t max_size);
+	
 private:
 	bool m_can_broadcast = false;
 };
@@ -63,7 +65,8 @@ public:
 	
 	void connect(ipv4_address address, int port);
 	void send(buffer const& data);
-	buffer recv();
+	// return std::nullopt when connection was cleanly closed by peer
+	std::optional<buffer> recv(bool read_all = true);
 	
 private:
 	tcp_socket(int descriptor);

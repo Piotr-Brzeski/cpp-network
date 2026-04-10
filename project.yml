@@ -16,6 +16,7 @@ settings:
     CLANG_CXX_LANGUAGE_STANDARD: c++20
     USE_HEADERMAP: false
     GCC_WARN_PEDANTIC: true
+    WARNING_CFLAGS: -Wextra
     GCC_TREAT_WARNINGS_AS_ERRORS: true
 
 include:

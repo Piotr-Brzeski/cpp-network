@@ -3,17 +3,20 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2026 Brzeski.net. All rights reserved.
 //
 
 #include "notifier.h"
+#include "exception.h"
 #include <unistd.h>
 
 using namespace network;
 
 notifier::notifier()
 {
-	::pipe(m_descriptors);
+	if(::pipe(m_descriptors) != 0) {
+		throw error::exception("notifier: pipe failed");
+	}
 }
 
 notifier::~notifier() {
@@ -28,7 +31,9 @@ notifier::~notifier() {
 void notifier::notify() {
 	std::lock_guard lock(m_mutex);
 	if(!m_notified) {
-		::write(m_descriptors[1], "", 1);
+		if(::write(m_descriptors[1], "", 1) != 1) {
+			throw error::exception("notifier::notify failed");
+		}
 		m_notified = true;
 	}
 }

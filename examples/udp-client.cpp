@@ -3,14 +3,14 @@
 //  udp-client
 //
 //  Created by Piotr Brzeski on 2023-03-01.
-//  Copyright © 2023 Brzeski.net. All rights reserved.
+//  Copyright © 2023-2026 Brzeski.net. All rights reserved.
 //
 
 #include <cpp-network/server.h>
 #include <cpp-log/log.h>
 #include <iostream>
 
-int main(int argc, const char * argv[]) {
+int main() {
 	try {
 		auto log = logger::start(logger::cout());
 		auto socket = network::udp_socket();

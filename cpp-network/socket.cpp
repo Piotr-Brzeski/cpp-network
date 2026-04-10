@@ -3,12 +3,12 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2026 Brzeski.net. All rights reserved.
 //
 
 #include "socket.h"
-#include <cassert>
 #include <array>
+#include <cerrno>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -29,7 +29,7 @@ public:
 		return ipv4_address(m_address.sin_addr.s_addr);
 	}
 	
-	::socklen_t size() {
+	::socklen_t size() const {
 		return sizeof(m_address);
 	}
 	sockaddr* pointer() {
@@ -92,30 +92,6 @@ void socket::bind(int port) {
 	}
 }
 
-buffer socket::recv(std::size_t max_size) {
-	auto data = buffer(max_size, 0);
-	auto size = ::recv(m_descriptor, data.data(), max_size, MSG_NOSIGNAL);
-	if(size < 0) {
-		throw exception("socket::recv failed.");
-	}
-	data.resize(size);
-	return data;
-}
-
-message socket::recvfrom(std::size_t max_size) {
-	auto msg = message(max_size);
-	auto address = socket_address();
-	auto address_size = address.size();
-	auto size = ::recvfrom(m_descriptor, msg.content.data(), max_size, MSG_NOSIGNAL, address.pointer(), &address_size);
-	assert(address_size == address.size());
-	if(size < 0) {
-		throw exception("socket::recvfrom failed.");
-	}
-	msg.content.resize(size);
-	msg.source = address.get();
-	return msg;
-}
-
 // MARK: - UDP socket
 udp_socket::udp_socket()
 	: socket(create(SOCK_DGRAM))
@@ -136,9 +112,35 @@ void udp_socket::broadcast(int port, const buffer &data) {
 void udp_socket::send(ipv4_address address_value, int port, buffer const& data) {
 	auto address = socket_address(port, address_value);
 	auto send = ::sendto(descriptor(), data.data(), data.size(), 0, address.pointer(), address.size());
-	if(send != data.size()) {
+	if(send < 0 || static_cast<std::size_t>(send) != data.size()) {
 		throw exception("udp_socket::send failed");
 	}
+}
+
+buffer udp_socket::recv(std::size_t max_size) {
+	auto data = buffer(max_size, 0);
+	auto size = ::recv(descriptor(), data.data(), max_size, MSG_NOSIGNAL);
+	if(size < 0) {
+		throw exception("udp_socket::recv failed.");
+	}
+	data.resize(size);
+	return data;
+}
+
+message udp_socket::recvfrom(std::size_t max_size) {
+	auto msg = message(max_size);
+	auto address = socket_address();
+	auto address_size = address.size();
+	auto size = ::recvfrom(descriptor(), msg.content.data(), max_size, MSG_NOSIGNAL, address.pointer(), &address_size);
+	if(address_size != address.size()) {
+		throw exception("udp_socket::recvfrom failed: unexpected address size.");
+	}
+	if(size < 0) {
+		throw exception("udp_socket::recvfrom failed.");
+	}
+	msg.content.resize(size);
+	msg.source = address.get();
+	return msg;
 }
 
 // MARK: - TCP socket
@@ -175,19 +177,49 @@ void tcp_socket::connect(ipv4_address address_value, int port) {
 }
 
 void tcp_socket::send(buffer const& data) {
-	auto sent = ::send(descriptor(), data.data(), data.size(), MSG_NOSIGNAL);
-	if(sent != data.size()) {
-		throw exception("socket::send failed.");
+	std::size_t offset = 0;
+	while(offset < data.size()) {
+		auto sent = ::send(descriptor(), data.data() + offset, data.size() - offset, MSG_NOSIGNAL);
+		if(sent < 0) {
+			throw exception("socket::send failed.");
+		}
+		offset += static_cast<std::size_t>(sent);
 	}
 }
 
-buffer tcp_socket::recv() {
-	thread_local auto local_buffer = std::array<std::uint8_t, 1024>();
-	auto data = buffer();
+std::optional<buffer> tcp_socket::recv(bool read_all) {
+	thread_local auto local_buffer = std::array<char, 1024>();
 	auto size = ::recv(descriptor(), local_buffer.data(), local_buffer.size(), MSG_NOSIGNAL);
 	if(size < 0) {
 		throw exception("socket::recv failed.");
 	}
-	data.append(local_buffer.data(), size);
+	if(size == 0) {
+		return std::nullopt;
+	}
+	auto data = buffer(local_buffer.data(), size);
+	if(read_all) {
+		while(size > 0) {
+			size = ::recv(descriptor(), local_buffer.data(), local_buffer.size(), MSG_NOSIGNAL);
+			if(size < 0) {
+				throw exception("socket::recv failed.");
+			}
+			data.append(local_buffer.data(), size);
+		}
+	}
+	else {
+		while(size == static_cast<ssize_t>(local_buffer.size())) {
+			size = ::recv(descriptor(), local_buffer.data(), local_buffer.size(), MSG_NOSIGNAL | MSG_DONTWAIT);
+			if(size < 0) {
+				if(errno == EAGAIN || errno == EWOULDBLOCK) {
+					break;
+				}
+				throw exception("socket::recv failed.");
+			}
+			if(size == 0) {
+				break;
+			}
+			data.append(local_buffer.data(), size);
+		}
+	}
 	return data;
 }

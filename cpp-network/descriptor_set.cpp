@@ -3,7 +3,7 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-06.
-//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2026 Brzeski.net. All rights reserved.
 //
 
 #include "descriptor_set.h"
@@ -26,6 +26,14 @@ void descriptor_set::add(int descriptor) {
 
 void descriptor_set::remove(int descriptor) {
 	FD_CLR(descriptor, &fdset);
+	if(descriptor + 1 == max_fd) {
+		max_fd = 0;
+		for(int i = 0; i < descriptor; ++i) {
+			if(FD_ISSET(i, &fdset)) {
+				max_fd = i + 1;
+			}
+		}
+	}
 }
 
 

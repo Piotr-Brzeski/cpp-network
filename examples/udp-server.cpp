@@ -3,14 +3,14 @@
 //  udp-server
 //
 //  Created by Piotr Brzeski on 2022-12-06.
-//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2026 Brzeski.net. All rights reserved.
 //
 
 #include <cpp-network/server.h>
 #include <cpp-log/log.h>
 #include <iostream>
 
-int main(int argc, const char * argv[]) {
+int main() {
 	try {
 		auto log = logger::start(logger::cout());
 		auto server = network::udp_server();

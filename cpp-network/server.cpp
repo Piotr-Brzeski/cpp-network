@@ -3,7 +3,7 @@
 //  Network
 //
 //  Created by Piotr Brzeski on 2022-12-04.
-//  Copyright © 2022-2023 Brzeski.net. All rights reserved.
+//  Copyright © 2022-2026 Brzeski.net. All rights reserved.
 //
 
 #include "server.h"
@@ -25,7 +25,6 @@ void server::stop() {
 		case state::ready:
 			return;
 		case state::stopping:
-			throw exception("server::stop failed - stop is already in progress.");
 		case state::running:
 			m_state = state::stopping;
 			m_select.wake();
@@ -51,6 +50,7 @@ void server::wait(std::unique_lock<std::mutex>& lock) {
 		}
 		m_state = state::ready;
 	}
+	m_state = state::running;
 }
 
 bool server::is_running() {
@@ -91,5 +91,4 @@ void udp_server::start(int port) {
 		m_state = state::stopped;
 		m_condition.notify_all();
 	});
-	m_state = state::running;
 }
