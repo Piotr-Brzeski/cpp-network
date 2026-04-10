@@ -8,6 +8,7 @@
 
 #include "socket.h"
 #include <cassert>
+#include <array>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -18,14 +19,14 @@ namespace {
 
 class socket_address {
 public:
-	explicit socket_address(int port = 0, ipv4_address address = INADDR_ANY) {
+	explicit socket_address(int port = 0, ipv4_address address = ipv4_address(INADDR_ANY)) {
 		m_address.sin_family = AF_INET;
-		m_address.sin_addr.s_addr = address;
+		m_address.sin_addr.s_addr = address.value();
 		m_address.sin_port = htons(port);
 	}
 	
 	ipv4_address get() const {
-		return m_address.sin_addr.s_addr;
+		return ipv4_address(m_address.sin_addr.s_addr);
 	}
 	
 	::socklen_t size() {
@@ -129,7 +130,7 @@ void udp_socket::broadcast(int port, const buffer &data) {
 		}
 		m_can_broadcast = true;
 	}
-	send(INADDR_BROADCAST, port, data);
+	send(ipv4_address(INADDR_BROADCAST), port, data);
 }
 
 void udp_socket::send(ipv4_address address_value, int port, buffer const& data) {
@@ -166,3 +167,27 @@ tcp_socket tcp_socket::accept() {
 	return tcp_socket(new_desciptor);
 }
 
+void tcp_socket::connect(ipv4_address address_value, int port) {
+	auto address = socket_address(port, address_value);
+	if (::connect(descriptor(), address.pointer(), address.size()) != 0) {
+		throw exception("socket::connect failed.");
+	}
+}
+
+void tcp_socket::send(buffer const& data) {
+	auto sent = ::send(descriptor(), data.data(), data.size(), MSG_NOSIGNAL);
+	if(sent != data.size()) {
+		throw exception("socket::send failed.");
+	}
+}
+
+buffer tcp_socket::recv() {
+	thread_local auto local_buffer = std::array<std::uint8_t, 1024>();
+	auto data = buffer();
+	auto size = ::recv(descriptor(), local_buffer.data(), local_buffer.size(), MSG_NOSIGNAL);
+	if(size < 0) {
+		throw exception("socket::recv failed.");
+	}
+	data.append(local_buffer.data(), size);
+	return data;
+}
