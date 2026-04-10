@@ -6,6 +6,9 @@ targets:
       HEADER_SEARCH_PATHS:
         - ${SRCROOT}/cpp-log
     sources:
+      - path: address.h
+        group: cpp-network
+        buildPhase: none
       - path: descriptor_set.cpp
         group: cpp-network
       - path: descriptor_set.h

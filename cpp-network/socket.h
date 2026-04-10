@@ -60,7 +60,11 @@ public:
 	
 	void listen();
 	tcp_socket accept();
-
+	
+	void connect(ipv4_address address, int port);
+	void send(buffer const& data);
+	buffer recv();
+	
 private:
 	tcp_socket(int descriptor);
 };
