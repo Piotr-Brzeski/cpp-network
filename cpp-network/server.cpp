@@ -50,7 +50,6 @@ void server::wait(std::unique_lock<std::mutex>& lock) {
 		}
 		m_state = state::ready;
 	}
-	m_state = state::running;
 }
 
 bool server::is_running() {
@@ -91,4 +90,5 @@ void udp_server::start(int port) {
 		m_state = state::stopped;
 		m_condition.notify_all();
 	});
+	m_state = state::running;
 }
